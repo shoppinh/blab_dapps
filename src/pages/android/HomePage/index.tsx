@@ -1,13 +1,15 @@
+import { useNavigation } from '@react-navigation/native';
+import {
+  IProvider,
+  WalletConnectModal,
+  useWalletConnectModal,
+} from '@walletconnect/modal-react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { Address, Chain, createWalletClient, custom, formatEther } from 'viem';
 import { mainnet, sepolia } from 'viem/chains';
-import {
-  useWalletConnectModal,
-  IProvider,
-} from '@walletconnect/modal-react-native';
-import { publicClient } from '../clients/public';
-
+import { publicClient } from '../../../clients/public';
+import { providerMetadata } from '../../../clients/walletConnect';
 export const CHAINS = [mainnet, sepolia];
 
 export default function HomePage() {
@@ -18,6 +20,7 @@ export default function HomePage() {
     address: wcAddress,
   } = useWalletConnectModal();
   const address = wcAddress as Address | undefined;
+  const navigation = useNavigation();
 
   const walletClient = useMemo(
     () =>
@@ -54,6 +57,7 @@ export default function HomePage() {
       const [blockNumber, gasPrice] = await Promise.all([
         publicClient.getBlockNumber(),
         publicClient.getGasPrice(),
+        publicClient.getBlock(),
       ]);
 
       setBlockNumber(blockNumber);
@@ -104,24 +108,28 @@ export default function HomePage() {
 
   return (
     <View style={styles.container}>
-      <Text numberOfLines={1}>Block number: {String(blockNumber)}</Text>
-      <Text numberOfLines={1}>Gas price: {formatEther(gasPrice)} ETH</Text>
-
-      {isConnected && (
-        <View style={styles.block}>
-          <Text numberOfLines={1}>Address: {address}</Text>
-          <Text numberOfLines={1}>Balance: {formatEther(balance)} ETH</Text>
-          <Text>Connected to: {chain.name}</Text>
-
-          {signature && (
-            <View style={styles.block}>
-              <Text>Signature: {signature}</Text>
-            </View>
-          )}
-        </View>
-      )}
+      <View style={styles.actionContainer}>
+        <Button
+          title="Account Page"
+          onPress={() => navigation.navigate('Account')}
+        />
+        <Button
+          title="Block Detail Page"
+          onPress={() => navigation.navigate('BlockDetail')}
+        />
+        <Button
+          title="Transaction Page"
+          onPress={() => navigation.navigate('Transaction')}
+        />
+        <Button
+          title="Transaction History Page"
+          onPress={() => navigation.navigate('TransactionHistory')}
+        />
+      </View>
 
       <View style={styles.block}>
+        <Text numberOfLines={1}>Block number: {String(blockNumber)}</Text>
+        <Text numberOfLines={1}>Gas price: {formatEther(gasPrice)} ETH</Text>
         {isConnected ? (
           <>
             <Button title="Sign message" onPress={onSignMessage} />
@@ -135,6 +143,10 @@ export default function HomePage() {
           <Button title="Connect" onPress={() => open()} />
         )}
       </View>
+      <WalletConnectModal
+        projectId={process.env.EXPO_PUBLIC_PROJECT_ID ?? ''}
+        providerMetadata={providerMetadata}
+      />
     </View>
   );
 }
@@ -142,9 +154,14 @@ export default function HomePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    marginHorizontal: 20,
   },
   block: {
     marginTop: 32,
+    flex: 1,
+  },
+  actionContainer: {
+    flexDirection: 'column',
+    gap: 10,
   },
 });
