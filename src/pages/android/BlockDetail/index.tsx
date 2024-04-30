@@ -5,9 +5,10 @@ import '@ethersproject/shims';
 import { ethers } from 'ethers';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Text, View, StyleSheet, FlatList } from 'react-native';
+import AndroidLayout from '../../../layout/android';
 
 const provider = new ethers.providers.JsonRpcProvider(
-  'http://117.4.240.104:8545',
+  process.env.EXPO_PUBLIC_URL_PROVIDER ?? '',
 );
 const acceptedKeys = [
   'hash',
@@ -47,21 +48,23 @@ const BlockDetail = () => {
   }, [getBlock]);
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={blockMappedData}
-        renderItem={({ item }) => (
-          <View style={styles.listRow}>
-            <Text numberOfLines={1} style={styles.listItemKey}>
-              {item.key} :
-            </Text>
-            <Text numberOfLines={1} style={styles.listItem}>
-              {item.data}
-            </Text>
-          </View>
-        )}
-      />
-    </View>
+    <AndroidLayout>
+      <View style={styles.container}>
+        <FlatList
+          data={blockMappedData}
+          renderItem={({ item }) => (
+            <View style={styles.listRow}>
+              <Text numberOfLines={1} style={styles.listItemKey}>
+                {item.key} :
+              </Text>
+              <Text numberOfLines={1} style={styles.listItem}>
+                {item.data}
+              </Text>
+            </View>
+          )}
+        />
+      </View>
+    </AndroidLayout>
   );
 };
 

@@ -10,6 +10,7 @@ import { Address, Chain, createWalletClient, custom, formatEther } from 'viem';
 import { mainnet, sepolia } from 'viem/chains';
 import { publicClient } from '../../../clients/public';
 import { providerMetadata } from '../../../clients/walletConnect';
+import IOSLayout from '../../../layout/ios';
 export const CHAINS = [mainnet, sepolia];
 
 export default function HomePage() {
@@ -106,43 +107,47 @@ export default function HomePage() {
   }, [address, provider, walletClient]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.actionContainer}>
-        <Button
-          title="Account Page"
-          onPress={() => navigation.navigate('Account')}
-        />
-        <Button
-          title="ERC20 Page"
-          onPress={() => navigation.navigate('ERC20')}
-        />
-        <Button
-          title="Transaction Page"
-          onPress={() => navigation.navigate('Transaction')}
-        />
-      </View>
+    <IOSLayout>
+      <View style={styles.container}>
+        <View style={styles.actionContainer}>
+          <Button
+            title="Account Page"
+            onPress={() => navigation.navigate('Account')}
+          />
+          <Button
+            title="ERC20 Page"
+            onPress={() => navigation.navigate('ERC20')}
+          />
+          <Button
+            title="Transaction Page"
+            onPress={() => navigation.navigate('Transaction')}
+          />
+        </View>
 
-      <View style={styles.block}>
-        <Text numberOfLines={1}>Block number: {String(blockNumber)}</Text>
-        <Text numberOfLines={1}>Gas price: {formatEther(gasPrice)} ETH</Text>
-        {isConnected ? (
-          <>
-            <Button title="Sign message" onPress={onSignMessage} />
-            <Button
-              title="Disconnect"
-              onPress={() => provider?.disconnect()}
-              color="red"
-            />
-          </>
-        ) : (
-          <Button title="Connect" onPress={() => open()} />
-        )}
+        <View style={styles.block}>
+          <Text numberOfLines={1}>Block number: {String(blockNumber)}</Text>
+          <Text numberOfLines={1}>Gas price: {formatEther(gasPrice)} ETH</Text>
+          <View style={styles.connectBlock}>
+            {isConnected ? (
+              <>
+                <Button title="Sign message" onPress={onSignMessage} />
+                <Button
+                  title="Disconnect"
+                  onPress={() => provider?.disconnect()}
+                  color="red"
+                />
+              </>
+            ) : (
+              <Button title="Connect" onPress={() => open()} />
+            )}
+          </View>
+        </View>
+        <WalletConnectModal
+          projectId={process.env.EXPO_PUBLIC_PROJECT_ID ?? ''}
+          providerMetadata={providerMetadata}
+        />
       </View>
-      <WalletConnectModal
-        projectId={process.env.EXPO_PUBLIC_PROJECT_ID ?? ''}
-        providerMetadata={providerMetadata}
-      />
-    </View>
+    </IOSLayout>
   );
 }
 
@@ -150,13 +155,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 20,
+    paddingVertical: 40,
   },
   block: {
     marginTop: 32,
     flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   actionContainer: {
     flexDirection: 'column',
-    gap: 10,
+    gap: 20,
+  },
+  connectBlock: {
+    marginTop: 10,
   },
 });

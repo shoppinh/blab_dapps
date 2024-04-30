@@ -10,6 +10,7 @@ import { mainnet, sepolia } from 'viem/chains';
 import { publicClient } from '../../../clients/public';
 import { providerMetadata } from '../../../clients/walletConnect';
 import { useNavigation } from '@react-navigation/native';
+import IOSLayout from '../../../layout/ios';
 export const CHAINS = [mainnet, sepolia];
 
 export default function Account() {
@@ -105,51 +106,53 @@ export default function Account() {
   }, [address, provider, walletClient]);
 
   return (
-    <View style={styles.container}>
-      {isConnected ? (
-        <View style={styles.block}>
-          <Text numberOfLines={1}>Address: {address}</Text>
-          <Text numberOfLines={1}>Balance: {formatEther(balance)} ETH</Text>
-          <Text>Connected to: {chain.name}</Text>
+    <IOSLayout>
+      <View style={styles.container}>
+        {isConnected ? (
+          <View style={styles.block}>
+            <Text numberOfLines={1}>Address: {address}</Text>
+            <Text numberOfLines={1}>Balance: {formatEther(balance)} ETH</Text>
+            <Text>Connected to: {chain.name}</Text>
 
-          {signature && (
-            <View style={styles.block}>
-              <Text>Signature: {signature}</Text>
-            </View>
+            {signature && (
+              <View style={styles.block}>
+                <Text>Signature: {signature}</Text>
+              </View>
+            )}
+          </View>
+        ) : (
+          <View>
+            <Text>Your account has not been connected. Connect now!</Text>
+          </View>
+        )}
+
+        <View style={styles.block}>
+          {isConnected ? (
+            <>
+              <Button title="Sign message" onPress={onSignMessage} />
+              <Button
+                title="Disconnect"
+                onPress={() => provider?.disconnect()}
+                color="red"
+              />
+            </>
+          ) : (
+            <>
+              <Button title="Connect" onPress={() => open()} />
+
+              <Button
+                title="Back to Home Page"
+                onPress={() => navigation.goBack()}
+              />
+            </>
           )}
         </View>
-      ) : (
-        <View>
-          <Text>Your account has not been connected. Connect now!</Text>
-        </View>
-      )}
-
-      <View style={styles.block}>
-        {isConnected ? (
-          <>
-            <Button title="Sign message" onPress={onSignMessage} />
-            <Button
-              title="Disconnect"
-              onPress={() => provider?.disconnect()}
-              color="red"
-            />
-          </>
-        ) : (
-          <>
-            <Button title="Connect" onPress={() => open()} />
-
-            <Button
-              title="Back to Home Page"
-              onPress={() => navigation.goBack()}
-            />
-          </>
-        )}
+        <WalletConnectModal
+          projectId={process.env.EXPO_PUBLIC_PROJECT_ID ?? ''}
+          providerMetadata={providerMetadata}
+        />
       </View>
-      <WalletConnectModal
-        projectId={process.env.EXPO_PUBLIC_PROJECT_ID ?? ''}
-        providerMetadata={providerMetadata}
-      />
-    </View>
+    </IOSLayout>
   );
 }
 

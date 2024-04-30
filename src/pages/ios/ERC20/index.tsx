@@ -1,36 +1,55 @@
-import { View, StyleSheet, Button } from 'react-native';
-import React from 'react';
+import { View, StyleSheet, Button, Text } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'react-native-get-random-values';
 
 import '@ethersproject/shims';
 
 import { ethers } from 'ethers';
 import ERC20_ABI from '../../erc20.abi.json';
+import IOSLayout from '../../../layout/ios';
+import { useFocusEffect } from '@react-navigation/native';
 
 const provider = new ethers.providers.JsonRpcProvider(
-  'http://117.4.240.104:8545',
+  process.env.EXPO_PUBLIC_URL_PROVIDER,
 );
 
-const toAddress = '0x51a6ED422389e66BBfB4921CA1F31397a8b98be3';
-const erc20Address = '0x1198290bf1dC4d257a6A30518C640C29e961C41e';
+const toAddress = process.env.EXPO_PUBLIC_ADDRESS_DESTINATION;
+const erc20Address = process.env.EXPO_PUBLIC_ECR20_ADDRESS;
 
 const ERC20 = () => {
-  async function sendERC20Transaction() {
-    const erc20 = new ethers.Contract(erc20Address, ERC20_ABI, provider);
-    // check erc20 token balance of address
-    const balance = await erc20.balanceOf(toAddress);
-    console.log(ethers.utils.formatEther(balance));
+  const [newBalance, setNewBalance] = useState('0');
 
-    // send 0.0000000001 erc20 token to toAddress
-    //   const amount = ethers.utils.parseUnits("0.0000000001", 18);
-    //   const tx = await erc20.connect(signer).transfer(toAddress, amount);
-    //   console.log(tx);
-  }
+  const getBalance = useCallback(async () => {
+    try {
+      const balance = await provider.getBalance(toAddress ?? '');
+      console.log('🚀 ~ getBalance ~ currentBalance:', balance);
+      setNewBalance(ethers.utils.formatEther(balance));
+    } catch (err) {
+      console.log('err', err);
+    }
+  }, []);
+  const sendERC20Transaction = useCallback(async () => {
+    const erc20 = new ethers.Contract(erc20Address ?? '', ERC20_ABI, provider);
+    try {
+      const balance = await erc20.balanceOf(toAddress);
+      console.log('🚀 ~ sendERC20Transaction ~ balance:', balance);
+      setNewBalance(ethers.utils.formatEther(balance));
+    } catch (err) {
+      console.log('err', err);
+    }
+  }, []);
+
+  useFocusEffect(() => {
+    getBalance();
+  });
 
   return (
-    <View style={styles.container}>
-      <Button title="Send ECR20 Transaction" onPress={sendERC20Transaction} />
-    </View>
+    <IOSLayout>
+      <View style={styles.container}>
+        <Text>{`Destination Address's balance: ${newBalance}`}</Text>
+        <Button title="Send ECR20 Transaction" onPress={sendERC20Transaction} />
+      </View>
+    </IOSLayout>
   );
 };
 

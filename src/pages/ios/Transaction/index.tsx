@@ -1,46 +1,62 @@
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import 'react-native-get-random-values';
 
 import '@ethersproject/shims';
 
 import { ethers } from 'ethers';
+import IOSLayout from '../../../layout/ios';
 
 const provider = new ethers.providers.JsonRpcProvider(
-  'http://117.4.240.104:8545',
+  process.env.EXPO_PUBLIC_URL_PROVIDER,
 );
 
-const toAddress = '0x51a6ED422389e66BBfB4921CA1F31397a8b98be3';
-const privateKey =
-  '0xe28f76b3bbc7a8ea9c6663e51d5ef59b4bc68a16bc76fda71f1aeeaddd73e244';
+const toAddress = process.env.EXPO_PUBLIC_ADDRESS_DESTINATION;
+const privateKey = process.env.EXPO_PUBLIC_PRIVATE_KEY;
 const Transaction = () => {
   const [transactions, setTransactions] = useState<any>();
+  const [inputTransactionId, setInputTransactionId] = useState<string>('');
   const getTransaction = useCallback(async () => {
-    const tx = await provider.getTransaction(
-      '0xd40b3418b5117acb1053173cbd2f733dbff5c6852d4eb2971a01e57f103f93d1',
-    );
-    setTransactions(tx);
-  }, []);
+    try {
+      const tx = await provider.getTransaction(inputTransactionId);
+      setTransactions(tx);
+    } catch (err) {
+      console.log('err', err);
+    }
+  }, [inputTransactionId]);
 
   async function sendTransaction() {
     const amount = ethers.utils.parseEther('0.1');
-    const wallet = new ethers.Wallet(privateKey, provider);
-    const tx = await wallet.sendTransaction({
-      to: toAddress,
-      value: amount,
-    });
-    console.log(tx);
+    const wallet = new ethers.Wallet(privateKey ?? '', provider);
+    try {
+      const tx = await wallet.sendTransaction({
+        to: toAddress,
+        value: amount,
+      });
+      setTransactions(tx);
+    } catch (err) {
+      console.log('err', err);
+    }
   }
 
   // useEffect(() => {
   //   getTransaction().catch(() => {});
   // }, [getTransaction]);
   return (
-    <View style={styles.container}>
-      <Button title="Get Transaction" onPress={getTransaction} />
-      <Button title="Send Transaction" onPress={sendTransaction} />
-      <Text>{JSON.stringify(transactions)}</Text>
-    </View>
+    <IOSLayout>
+      <View style={styles.container}>
+        {/* Input text to get transaction */}
+        <TextInput
+          style={styles.input}
+          onChangeText={setInputTransactionId}
+          value={inputTransactionId}
+          accessibilityLabel=""
+        />
+        <Button title="Get Transaction" onPress={getTransaction} />
+        <Button title="Send Transaction" onPress={sendTransaction} />
+        <Text>{JSON.stringify(transactions)}</Text>
+      </View>
+    </IOSLayout>
   );
 };
 
@@ -53,5 +69,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
+    paddingHorizontal: 20,
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    width: '100%',
   },
 });
