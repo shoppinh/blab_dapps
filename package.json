@@ -16,7 +16,7 @@
     "@react-navigation/native-stack": "^6.9.26",
     "@walletconnect/modal-react-native": "^1.0.0-rc.14",
     "ethers": "^5.7.0",
-    "expo": "~49.0.13",
+    "expo": "^51.0.8",
     "expo-status-bar": "~1.6.0",
     "fastestsmallesttextencoderdecoder": "^1.0.22",
     "react": "18.2.0",
