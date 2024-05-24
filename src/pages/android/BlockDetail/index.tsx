@@ -5,7 +5,7 @@ import '@ethersproject/shims';
 import { ethers } from 'ethers';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Text, View, StyleSheet, FlatList } from 'react-native';
-import AndroidLayout from '../../../layout/android';
+import Layout from '../../../layout';
 
 const provider = new ethers.providers.JsonRpcProvider(
   process.env.EXPO_PUBLIC_URL_PROVIDER ?? '',
@@ -48,7 +48,7 @@ const BlockDetail = () => {
   }, [getBlock]);
 
   return (
-    <AndroidLayout>
+    <Layout>
       <View style={styles.container}>
         <FlatList
           data={blockMappedData}
@@ -64,7 +64,7 @@ const BlockDetail = () => {
           )}
         />
       </View>
-    </AndroidLayout>
+    </Layout>
   );
 };
 

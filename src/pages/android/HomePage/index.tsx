@@ -10,7 +10,7 @@ import { Address, Chain, createWalletClient, custom, formatEther } from 'viem';
 import { mainnet, sepolia } from 'viem/chains';
 import { publicClient } from '../../../clients/public';
 import { providerMetadata } from '../../../clients/walletConnect';
-import AndroidLayout from '../../../layout/android';
+import Layout from '../../../layout';
 export const CHAINS = [mainnet, sepolia];
 
 export default function HomePage() {
@@ -108,42 +108,42 @@ export default function HomePage() {
   }, [address, provider, walletClient]);
 
   return (
-    <AndroidLayout>
+    <Layout>
       <View style={styles.container}>
         <View style={styles.actionContainer}>
           <Button
-            title="Account Page"
+            title="Tài khoản"
             onPress={() => navigation.navigate('Account')}
           />
           <Button
-            title="Block Detail Page"
+            title="Chi tiết khối"
             onPress={() => navigation.navigate('BlockDetail')}
           />
           <Button
-            title="Transaction Page"
+            title="Giao dịch"
             onPress={() => navigation.navigate('Transaction')}
           />
           <Button
-            title="Transaction History Page"
+            title="Lịch sử giao dịch"
             onPress={() => navigation.navigate('TransactionHistory')}
           />
         </View>
 
         <View style={styles.block}>
-          <Text numberOfLines={1}>Block number: {String(blockNumber)}</Text>
-          <Text numberOfLines={1}>Gas price: {formatEther(gasPrice)} ETH</Text>
+          <Text numberOfLines={1}>Số khối: {String(blockNumber)}</Text>
+          <Text numberOfLines={1}>Giá GAS: {formatEther(gasPrice)} ETH</Text>
           <View style={styles.connectBlock}>
             {isConnected ? (
               <>
-                <Button title="Sign message" onPress={onSignMessage} />
+                <Button title="Ký" onPress={onSignMessage} />
                 <Button
-                  title="Disconnect"
+                  title="Hủy kết nối"
                   onPress={() => provider?.disconnect()}
                   color="red"
                 />
               </>
             ) : (
-              <Button title="Connect" onPress={() => open()} />
+              <Button title="Kết nối" onPress={() => open()} />
             )}
           </View>
         </View>
@@ -152,7 +152,7 @@ export default function HomePage() {
           providerMetadata={providerMetadata}
         />
       </View>
-    </AndroidLayout>
+    </Layout>
   );
 }
 

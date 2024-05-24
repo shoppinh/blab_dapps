@@ -6,7 +6,7 @@ import '@ethersproject/shims';
 
 import { ethers } from 'ethers';
 import ERC20_ABI from '../../erc20.abi.json';
-import IOSLayout from '../../../layout/ios';
+import Layout from '../../../layout';
 import { useFocusEffect } from '@react-navigation/native';
 
 const provider = new ethers.providers.JsonRpcProvider(
@@ -44,12 +44,12 @@ const ERC20 = () => {
   });
 
   return (
-    <IOSLayout>
+    <Layout>
       <View style={styles.container}>
-        <Text>{`Destination Address's ERC20 balance: ${newBalance}`}</Text>
-        <Button title="Send ECR20 Transaction" onPress={sendERC20Transaction} />
+        <Text>{`Số dư: ${newBalance}`}</Text>
+        <Button title="Gửi giao dịch ERC20" onPress={sendERC20Transaction} />
       </View>
-    </IOSLayout>
+    </Layout>
   );
 };
 

@@ -1,7 +1,7 @@
 import { View, Text, FlatList, StyleSheet, StatusBar } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { APIS } from '../../../store/types';
-import AndroidLayout from '../../../layout/android';
+import Layout from '../../../layout';
 
 const Item = ({ title }: { title: string }) => (
   <View style={styles.item}>
@@ -29,24 +29,21 @@ const TransactionHistory = () => {
       });
   }, [sourceAddress]);
   return (
-    <AndroidLayout>
+    <Layout>
       <View style={styles.wrapper}>
         <FlatList
           data={txHistory}
           renderItem={({ item }) => <Item title={item} />}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item}
         />
       </View>
-    </AndroidLayout>
+    </Layout>
   );
 };
 
 export default TransactionHistory;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   wrapper: {
     flex: 1,
     marginTop: 20,

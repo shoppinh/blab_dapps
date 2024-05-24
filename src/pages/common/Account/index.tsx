@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import {
   IProvider,
   WalletConnectModal,
@@ -9,8 +10,7 @@ import { Address, Chain, createWalletClient, custom, formatEther } from 'viem';
 import { mainnet, sepolia } from 'viem/chains';
 import { publicClient } from '../../../clients/public';
 import { providerMetadata } from '../../../clients/walletConnect';
-import { useNavigation } from '@react-navigation/native';
-import AndroidLayout from '../../../layout/android';
+import Layout from '../../../layout';
 export const CHAINS = [mainnet, sepolia];
 
 export default function Account() {
@@ -106,45 +106,45 @@ export default function Account() {
   }, [address, provider, walletClient]);
 
   return (
-    <AndroidLayout>
+    <Layout>
       <View style={styles.container}>
         {isConnected ? (
           <View style={styles.block}>
-            <Text numberOfLines={1}>Address: {address}</Text>
-            <Text numberOfLines={1}>Balance: {formatEther(balance)} ETH</Text>
-            <Text>Connected to: {chain.name}</Text>
+            <Text numberOfLines={1}>Địa chỉ: {address}</Text>
+            <Text numberOfLines={1}>Số dư: {formatEther(balance)} ETH</Text>
+            <Text>Được kết nối đến: {chain.name}</Text>
 
             {signature && (
               <View style={styles.block}>
-                <Text>Signature: {signature}</Text>
+                <Text>Chữ kí: {signature}</Text>
               </View>
             )}
           </View>
         ) : (
           <View>
-            <Text>Your account has not been connected. Connect now!</Text>
+            <Text>Tài khoản của bạn chưa được kết nối. Kết nối ngay!</Text>
           </View>
         )}
 
         <View style={styles.block}>
           {isConnected ? (
             <>
-              <Button title="Sign message" onPress={onSignMessage} />
+              <Button title="Ký" onPress={onSignMessage} />
               <Button
-                title="Disconnect"
+                title="Hủy kết nối"
                 onPress={() => provider?.disconnect()}
                 color="red"
               />
             </>
           ) : (
-            <View style={styles.actionWrapper}>
-              <Button title="Connect" onPress={() => open()} />
+            <>
+              <Button title="Kết nối" onPress={() => open()} />
 
               <Button
-                title="Back to Home Page"
+                title="Quay lại trang chủ"
                 onPress={() => navigation.goBack()}
               />
-            </View>
+            </>
           )}
         </View>
         <WalletConnectModal
@@ -152,7 +152,7 @@ export default function Account() {
           providerMetadata={providerMetadata}
         />
       </View>
-    </AndroidLayout>
+    </Layout>
   );
 }
 
@@ -164,9 +164,5 @@ const styles = StyleSheet.create({
   },
   block: {
     marginTop: 32,
-  },
-  actionWrapper: {
-    flexDirection: 'column',
-    gap: 10,
   },
 });

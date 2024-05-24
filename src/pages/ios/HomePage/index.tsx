@@ -10,7 +10,7 @@ import { Address, Chain, createWalletClient, custom, formatEther } from 'viem';
 import { mainnet, sepolia } from 'viem/chains';
 import { publicClient } from '../../../clients/public';
 import { providerMetadata } from '../../../clients/walletConnect';
-import IOSLayout from '../../../layout/ios';
+import Layout from '../../../layout';
 export const CHAINS = [mainnet, sepolia];
 
 export default function HomePage() {
@@ -107,38 +107,35 @@ export default function HomePage() {
   }, [address, provider, walletClient]);
 
   return (
-    <IOSLayout>
+    <Layout>
       <View style={styles.container}>
         <View style={styles.actionContainer}>
           <Button
-            title="Account Page"
+            title="Tài khoản"
             onPress={() => navigation.navigate('Account')}
           />
+          <Button title="ERC20" onPress={() => navigation.navigate('ERC20')} />
           <Button
-            title="ERC20 Page"
-            onPress={() => navigation.navigate('ERC20')}
-          />
-          <Button
-            title="Transaction Page"
+            title="Giao dịch"
             onPress={() => navigation.navigate('Transaction')}
           />
         </View>
 
         <View style={styles.block}>
-          <Text numberOfLines={1}>Block number: {String(blockNumber)}</Text>
-          <Text numberOfLines={1}>Gas price: {formatEther(gasPrice)} ETH</Text>
+          <Text numberOfLines={1}>Số khối: {String(blockNumber)}</Text>
+          <Text numberOfLines={1}>Giá GAS: {formatEther(gasPrice)} ETH</Text>
           <View style={styles.connectBlock}>
             {isConnected ? (
               <>
-                <Button title="Sign message" onPress={onSignMessage} />
+                <Button title="Ký" onPress={onSignMessage} />
                 <Button
-                  title="Disconnect"
+                  title="Hủy kết nối"
                   onPress={() => provider?.disconnect()}
                   color="red"
                 />
               </>
             ) : (
-              <Button title="Connect" onPress={() => open()} />
+              <Button title="Kết nối" onPress={() => open()} />
             )}
           </View>
         </View>
@@ -147,7 +144,7 @@ export default function HomePage() {
           providerMetadata={providerMetadata}
         />
       </View>
-    </IOSLayout>
+    </Layout>
   );
 }
 

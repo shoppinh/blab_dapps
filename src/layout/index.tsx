@@ -1,16 +1,14 @@
 import React, { PropsWithChildren } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ANDROID_GREEN } from '../../utils/constants';
 interface Props extends PropsWithChildren {}
-const AndroidLayout: React.FC<Props> = ({ children }) => {
+const Layout: React.FC<Props> = ({ children }) => {
   return <View style={styles.wrapper}>{children}</View>;
 };
 
-export default AndroidLayout;
+export default Layout;
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: ANDROID_GREEN,
     flex: 1,
   },
 });

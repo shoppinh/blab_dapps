@@ -1,11 +1,11 @@
-import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import 'react-native-get-random-values';
 
 import '@ethersproject/shims';
 
 import { ethers } from 'ethers';
-import IOSLayout from '../../../layout/ios';
+import Layout from '../../../layout';
 
 const provider = new ethers.providers.JsonRpcProvider(
   process.env.EXPO_PUBLIC_URL_PROVIDER,
@@ -43,7 +43,7 @@ const Transaction = () => {
   //   getTransaction().catch(() => {});
   // }, [getTransaction]);
   return (
-    <IOSLayout>
+    <Layout>
       <View style={styles.container}>
         {/* Input text to get transaction */}
         <TextInput
@@ -56,7 +56,7 @@ const Transaction = () => {
         <Button title="Send Transaction" onPress={sendTransaction} />
         <Text>{JSON.stringify(transactions)}</Text>
       </View>
-    </IOSLayout>
+    </Layout>
   );
 };
 
