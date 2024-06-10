@@ -1,47 +1,73 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import 'react-native-get-random-values';
 
 import '@ethersproject/shims';
 
-import { ethers } from 'ethers';
+import { useWalletConnectModal } from '@walletconnect/modal-react-native';
+import {
+  Address,
+  Hash,
+  createPublicClient,
+  createWalletClient,
+  custom,
+  http,
+} from 'viem';
+import { mainnet } from 'viem/chains';
 import Layout from '../../../layout';
 
-const provider = new ethers.providers.JsonRpcProvider(
-  process.env.EXPO_PUBLIC_URL_PROVIDER,
-);
-
-const toAddress = process.env.EXPO_PUBLIC_ADDRESS_DESTINATION;
-const privateKey = process.env.EXPO_PUBLIC_PRIVATE_KEY;
 const Transaction = () => {
   const [transactions, setTransactions] = useState<any>();
   const [inputTransactionId, setInputTransactionId] = useState<string>('');
+  const [toAddress, setToAddress] = useState<string>('');
+  const [amount, setAmount] = useState<string>('');
+  const { provider, address } = useWalletConnectModal();
+
+  const publicClient = createPublicClient({
+    chain: mainnet,
+    transport: http(),
+  });
+
+  const walletClient = useMemo(
+    () =>
+      createWalletClient({
+        chain: mainnet,
+        transport: custom({
+          async request({ method, params }) {
+            return await provider?.request({ method, params });
+          },
+        }),
+      }),
+    [provider],
+  );
   const getTransaction = useCallback(async () => {
     try {
-      const tx = await provider.getTransaction(inputTransactionId);
-      setTransactions(tx);
-    } catch (err) {
-      console.log('err', err);
-    }
-  }, [inputTransactionId]);
-
-  async function sendTransaction() {
-    const amount = ethers.utils.parseEther('0.1');
-    const wallet = new ethers.Wallet(privateKey ?? '', provider);
-    try {
-      const tx = await wallet.sendTransaction({
-        to: toAddress,
-        value: amount,
+      const tx = await publicClient.getTransaction({
+        hash: inputTransactionId as Hash,
       });
       setTransactions(tx);
     } catch (err) {
       console.log('err', err);
     }
+  }, [inputTransactionId, publicClient]);
+
+  async function sendTransaction() {
+    const parsedAmount = BigInt(amount);
+
+    if (amount && toAddress) {
+      try {
+        const tx = await walletClient.sendTransaction({
+          to: toAddress as Address,
+          value: parsedAmount,
+          account: address as Address,
+        });
+        setTransactions(tx);
+      } catch (err) {
+        console.log('err', err);
+      }
+    }
   }
 
-  // useEffect(() => {
-  //   getTransaction().catch(() => {});
-  // }, [getTransaction]);
   return (
     <Layout>
       <View style={styles.container}>
@@ -53,6 +79,18 @@ const Transaction = () => {
           accessibilityLabel=""
         />
         <Button title="Get Transaction" onPress={getTransaction} />
+        <TextInput
+          style={styles.input}
+          onChangeText={setToAddress}
+          value={toAddress}
+          accessibilityLabel=""
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={setAmount}
+          value={amount}
+          accessibilityLabel=""
+        />
         <Button title="Send Transaction" onPress={sendTransaction} />
         <Text>{JSON.stringify(transactions)}</Text>
       </View>

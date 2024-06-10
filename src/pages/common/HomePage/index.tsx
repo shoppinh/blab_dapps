@@ -127,6 +127,7 @@ export default function HomePage() {
             title="Lịch sử giao dịch"
             onPress={() => navigation.navigate('TransactionHistory')}
           />
+          <Button title="ERC20" onPress={() => navigation.navigate('ERC20')} />
         </View>
 
         <View style={styles.block}>
