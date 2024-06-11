@@ -136,12 +136,16 @@ export default function HomePage() {
           <View style={styles.connectBlock}>
             {isConnected ? (
               <>
-                <Button title="Ký" onPress={onSignMessage} />
-                <Button
-                  title="Hủy kết nối"
-                  onPress={() => provider?.disconnect()}
-                  color="red"
-                />
+                <View style={{ marginVertical: 5 }}>
+                  <Button title="Ký" onPress={onSignMessage} />
+                </View>
+                <View style={{ marginVertical: 5 }}>
+                  <Button
+                    title="Hủy kết nối"
+                    onPress={() => provider?.disconnect()}
+                    color="red"
+                  />
+                </View>
               </>
             ) : (
               <Button title="Kết nối" onPress={() => open()} />
