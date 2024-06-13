@@ -5,6 +5,7 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 
 import { useWalletConnectModal } from '@walletconnect/modal-react-native';
+import { ethers } from 'ethers';
 import {
   Address,
   Hash,
@@ -15,7 +16,6 @@ import {
   http,
 } from 'viem';
 import Layout from '../../../layout';
-import { ethers } from 'ethers';
 
 export const bscTestNet = /*#__PURE__*/ defineChain({
   id: 97,

@@ -138,7 +138,9 @@ export default function Account() {
             </>
           ) : (
             <>
-              <Button title="Kết nối" onPress={() => open()} />
+              <View style={{ marginVertical: 10 }}>
+                <Button title="Kết nối" onPress={() => open()} />
+              </View>
 
               <Button
                 title="Quay lại trang chủ"
