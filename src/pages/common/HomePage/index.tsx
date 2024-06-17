@@ -123,10 +123,10 @@ export default function HomePage() {
             title="Giao dịch"
             onPress={() => navigation.navigate('Transaction')}
           />
-          <Button
+          {/* <Button
             title="Lịch sử giao dịch"
             onPress={() => navigation.navigate('TransactionHistory')}
-          />
+          /> */}
           <Button title="ERC20" onPress={() => navigation.navigate('ERC20')} />
         </View>
 

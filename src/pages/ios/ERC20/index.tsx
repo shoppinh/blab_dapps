@@ -1,13 +1,13 @@
-import { View, StyleSheet, Button, Text, TextInput } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import 'react-native-get-random-values';
 
 import '@ethersproject/shims';
 
-import { ethers } from 'ethers';
-import ERC20_ABI from '../../erc20.abi.json';
-import Layout from '../../../layout';
 import { useFocusEffect } from '@react-navigation/native';
+import { ethers } from 'ethers';
+import Layout from '../../../layout';
+import ERC20_ABI from '../../erc20.abi.json';
 
 const provider = new ethers.providers.JsonRpcProvider(
   process.env.EXPO_PUBLIC_URL_PROVIDER,
@@ -42,7 +42,7 @@ const ERC20 = () => {
     }
     const balance = await erc20.balanceOf(balanceAddress);
     setNewBalance(ethers.utils.formatEther(balance));
-  }, []);
+  }, [inputBalance, toAddress]);
 
   useFocusEffect(() => {
     getBalance();

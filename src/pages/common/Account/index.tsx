@@ -130,11 +130,13 @@ export default function Account() {
           {isConnected ? (
             <>
               <Button title="Ký" onPress={onSignMessage} />
-              <Button
-                title="Hủy kết nối"
-                onPress={() => provider?.disconnect()}
-                color="red"
-              />
+              <View style={{ marginVertical: 10 }}>
+                <Button
+                  title="Hủy kết nối"
+                  onPress={() => provider?.disconnect()}
+                  color="red"
+                />
+              </View>
             </>
           ) : (
             <>
