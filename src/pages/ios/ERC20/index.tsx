@@ -20,6 +20,7 @@ const ERC20 = () => {
   const [newBalance, setNewBalance] = useState('0');
   const [inputBalance, setInputBalance] = useState('');
   const [toAddress, setToAddress] = useState('');
+  const [message, setMessage] = useState('');
 
   const getBalance = useCallback(async () => {
     const erc20 = new ethers.Contract(erc20Address ?? '', ERC20_ABI, provider);
@@ -40,6 +41,7 @@ const ERC20 = () => {
     } catch (err) {
       console.log('🚀 ~ sendERC20Transaction transfer ~ err:', err);
     }
+    setMessage('Gửi giao dịch thành công');
     const balance = await erc20.balanceOf(balanceAddress);
     setNewBalance(ethers.utils.formatEther(balance));
   }, [inputBalance, toAddress]);
@@ -71,6 +73,8 @@ const ERC20 = () => {
           accessibilityLabel=""
         />
         <Button title="Gửi giao dịch ERC20" onPress={sendERC20Transaction} />
+
+        <Text>{message}</Text>
       </View>
     </Layout>
   );
